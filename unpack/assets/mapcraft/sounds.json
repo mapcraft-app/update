@@ -1,0 +1,15 @@
+{
+  "blank": {
+    "category": "master",
+    "id": 1,
+    "name": "blank",
+    "subtitle": "Blank sounds",
+    "sounds": [
+      {
+        "name": "mapcraft:mapcraft/blank",
+        "preload": true,
+        "type": "event"
+      }
+    ]
+  }
+}

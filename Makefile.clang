@@ -1,0 +1,44 @@
+# sudo apt install mingw-w64
+
+CXX 				:=	clang-16
+CXXFLAGS		?=	-Wall -Wextra -std=c++17 -static-libgcc -static-libstdc++ -DTARGET=$(TARGET) $(LIBRARY)
+RM					:=	rm -f
+SRCS				:=	srcs/main.cpp
+LIBRARY			?=	-I ./srcs -I ./srcs/7zip
+OBJS				:=	$(SRCS:.cpp=.o)
+
+ifeq ($(TARGET),windows)
+	NAME			:= 	mapcraft-update.exe
+else ifeq ($(TARGET),macos)
+	NAME			:= 	mapcraft-update.mac
+else
+	NAME			:= 	mapcraft-update
+endif
+
+# Colors
+RED			:= \e[0;91m
+GREEN		:= \e[0;92m
+BLUE		:= \e[0;94m
+MAGENTA	:= \e[0;95m
+RESET		:= \e[0;0m
+PREFIX	:= $(MAGENTA)$(NAME)$(RESET) => 
+
+$(NAME): $(OBJS)
+	@echo "$(PREFIX)$(GREEN)Bundling $(RESET)$(NAME)$(GREEN) executable$(RESET)"
+	@$(CXX) $(CXXFLAGS) $(OBJS) $(LIBRARY) -o $@
+
+%.o: %.cpp
+	@echo "$(PREFIX)$(GREEN)Compiling file $(RESET)$< $(BLUE)to $(RESET)$@"
+	@$(CXX) $(CXXFLAGS) $(LIBRARY) -c $< -o $@
+
+all: $(NAME)
+
+fclean:
+	$(RM) $(OBJS)
+	$(RM) $(NAME)
+
+clean:
+	$(RM) $(OBJS)
+
+re: fclean
+	$(MAKE) all
