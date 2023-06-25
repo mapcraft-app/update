@@ -178,14 +178,19 @@ class SevenZip {
 			execvArgs[args.size()] = NULL;
 
 			if (pipe(stdPipe) == -1)
-				throw new std::exception();
+				throw new std::runtime_error(std::string("pipe failed: ") + strerror(errno));
 			if ((pid = fork()) == -1)
-				throw new std::exception();
+				throw new std::runtime_error(std::string("fork failed: ") + strerror(errno));
 			if (pid == 0) {
 				dup2(stdPipe[1], STDOUT_FILENO);
 				close(stdPipe[0]); close(stdPipe[1]);
 				execv(this->path7z().c_str(), execvArgs);
-				throw new std::exception();
+
+				std::string err = std::string("execv failed [");
+				err.append(this->path7z());
+				err.append("]: ");
+				err.append(strerror(errno));
+				throw new std::runtime_error(err);
 			} else {
 				close(stdPipe[1]);
 				do {
