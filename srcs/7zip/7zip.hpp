@@ -14,8 +14,10 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
-#include <sys/wait.h>
 #include "trim.hpp"
+#if _WIN32
+	#include <windows.h>
+#endif
 
 typedef std::map<std::string, std::string> SevenZipList;
 typedef std::vector<std::string> SevenZipVector;
@@ -157,8 +159,55 @@ class SevenZip {
 		}
 	public:
 		SevenZipList cmd(SevenZipVector args, bool genStat = true, bool yesForAll = false) {
+		#if _WIN32
+			SECURITY_ATTRIBUTES saAttr;
+			HANDLE hReadPipe, hWritePipe;
+			STARTUPINFO si;
+			PROCESS_INFORMATION pi;
+			DWORD bytesRead;
+			std::string command(this->path7z().u8string());
+			char buffer[4096];
+
+			saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
+			saAttr.bInheritHandle = TRUE;
+			saAttr.lpSecurityDescriptor = NULL;
+
+			this->percent = 0;
+			this->stdOut.clear();
+			this->stdOut = "";
+			args.insert(args.begin(), "7za");
+			if (genStat)
+				args.push_back("-bsp1");
+			if (yesForAll)
+				args.push_back("-y");
+			
+			for (SevenZipVector::const_iterator it = args.begin(); it != args.end(); it++)
+				command += " " + *it;
+
+			if (!CreatePipe(&hReadPipe, &hWritePipe, &saAttr, 0))
+     		throw new std::runtime_error(std::string("pipe failed: ") + strerror(errno));
+			
+			ZeroMemory(&si, sizeof(si));
+			si.cb = sizeof(si);
+			si.dwFlags = STARTF_USESTDHANDLES;
+			si.hStdOutput = hWritePipe;
+			si.hStdError = hWritePipe;
+			if (!CreateProcess(
+				NULL, (LPSTR)command.c_str(), NULL,
+				NULL, TRUE, CREATE_NEW_CONSOLE,
+				NULL, NULL, &si, &pi)
+			)
+				throw new std::runtime_error(std::string("CreateProcess failed: ") + strerror(errno));
+			CloseHandle(hWritePipe);
+
+			while (ReadFile(hReadPipe, buffer, sizeof(buffer), &bytesRead, NULL)) {
+				if (bytesRead == 0)
+					break;
+				this->isStat(std::string(buffer));
+			}
+		#else
 			pid_t pid;
-			int stdPipe[2], status, bytes;
+			int stdPipe[2], bytes;
 			char temp[256];
 
 			this->percent = 0;
@@ -198,13 +247,13 @@ class SevenZip {
 					std::memset(&(temp[0]), 0, 256);
 				}
 				while ((bytes = read(stdPipe[0], temp, sizeof(temp))) > 0);
-				waitpid(pid, &status, 0);
 			}
 
-			this->percent = 100;
 			for (size_t i = 0; execvArgs[i]; i++)
 				delete [] execvArgs[i];
 			delete [] execvArgs;
+		#endif
+			this->percent = 100;
 			return this->parseListOutput();
 		}
 

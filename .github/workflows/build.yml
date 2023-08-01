@@ -1,0 +1,33 @@
+name: Build
+
+on:
+  push:
+    tags:
+      - '*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install build system
+        run: |
+          apt update && apt upgrade -y
+          apt install -y build-essential mingw-w64 libc++-dev
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 18
+      - name: Build software
+        run: |
+          sh build.sh
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+              update-linux
+              update-darwin
+              update-windows.exe

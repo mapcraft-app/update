@@ -1,4 +1,5 @@
 #include <filesystem>
+#include <iostream>
 #include "7zip.hpp"
 #include "spawn.hpp"
 
@@ -28,7 +29,7 @@ int main(int argc, char **argv) {
 		std::cout << "Fork and exec software" << std::endl;
 		spawnProgram(argv[3]);
 	} catch (std::exception &e) {
-		std::cerr << e.what() << std::endl;
+		std::cerr << "ERROR: " <<  e.what() << std::endl;
 	}
 	return 0;
 }
