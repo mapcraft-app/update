@@ -28,12 +28,13 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v3
       - name: Install lib
-        run: sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y build-essential mingw-w64 libc++-dev
+        run: sudo apt-get update && sudo apt-get install -y build-essential curl git gnupg libc++-dev lsb-release mingw-w64 software-properties-common ssh wget
       - name: Install clang
-        run: sudo wget https://apt.llvm.org/llvm.sh && sudo chmod +x llvm.sh && sudo ./llvm.sh 18
+        run: sudo curl -o llvm.sh https://apt.llvm.org/llvm.sh && sudo chmod +x llvm.sh && sudo ./llvm.sh 18 && sudo rm -rf llvm.sh
       - name: Build
         run: |
           make TARGET=linux
+          make TARGET=linux clean
           make TARGET=windows
       - name: Release
         uses: softprops/action-gh-release@v1
