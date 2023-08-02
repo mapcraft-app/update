@@ -9,12 +9,12 @@
 #include <string>
 #include <sstream>
 #include <regex>
-#include <filesystem>
 #include <algorithm>
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
 #include "trim.hpp"
+#include "filesystem.hpp"
 #if _WIN32
 	#include <windows.h>
 #endif
@@ -70,13 +70,13 @@ class SevenZip {
 			return "x64";
 		}
 
-		std::filesystem::path path7z() {
-			std::filesystem::path path = std::filesystem::current_path();
-			path /= "srcs";
-			path /= "7zip";
-			path /= this->convertPlatform();
-			path /= this->type();
-			path /= this->exec7z();
+		std::string path7z() {
+			std::string path = current_path();
+			path += "srcs";
+			path += "7zip";
+			path += this->convertPlatform();
+			path += this->type();
+			path += this->exec7z();
 			return path;
 		}
 
@@ -165,7 +165,7 @@ class SevenZip {
 			STARTUPINFO si;
 			PROCESS_INFORMATION pi;
 			DWORD bytesRead;
-			std::string command(this->path7z().u8string());
+			std::string command(this->path7z());
 			char buffer[4096];
 
 			saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);

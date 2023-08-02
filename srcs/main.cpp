@@ -1,7 +1,7 @@
-#include <filesystem>
 #include <iostream>
 #include "7zip.hpp"
 #include "spawn.hpp"
+#include "filesystem.hpp"
 
 /**
  * argv[1]: archive path
@@ -12,6 +12,8 @@
 int main(int argc, char **argv) {
 	SevenZip zip = SevenZip();
 	bool deleteAfter = false;
+
+	std::cout << current_path() << std::endl;
 
 	if (argc < 4 || argc > 6) {
 		std::cerr << "Arguments:\n-1 {string} archive path\n-2 {string} unpack dir\n-3 {string} executable path\n-4 {boolean | optional} delete archive after unpack" << std::endl;
@@ -24,7 +26,7 @@ int main(int argc, char **argv) {
 		SevenZipList s = zip.unpack(argv[1], argv[2]);
 		if (deleteAfter) {
 			std::cout << "Delete archive" << std::endl;
-			std::filesystem::remove_all(argv[1]);
+			rm(argv[1]);
 		}
 		std::cout << "Fork and exec software" << std::endl;
 		spawnProgram(argv[3]);
