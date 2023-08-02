@@ -9,10 +9,25 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  buildMac:
+    runs-on: macos-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+      - name: Build
+        run: |
+           make TARGET=macos
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            update-darwin
+  buildWinLnx:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Check out Git repository
+        uses: actions/checkout@v3
       - name: Install build system
         run: |
           apt update && apt upgrade -y
@@ -20,14 +35,14 @@ jobs:
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
           sudo ./llvm.sh 18
-      - name: Build software
+      - name: Build
         run: |
-          sh build.sh
+          make TARGET=linux
+          make TARGET=windows
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-              update-linux
-              update-darwin
-              update-windows.exe
+            update-linux
+            update-windows.exe

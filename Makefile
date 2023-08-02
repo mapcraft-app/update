@@ -1,28 +1,19 @@
 # sudo apt install -y mingw-w64
 CXX				:=	clang++-18
 CXXFLAGS	:=	-Wall -Werror -Wextra -pedantic -std=c++17 \
-							-DTARGET=$(TARGET) -O2 -static 
+							-DTARGET=$(TARGET) -O2 -static
 RM				:=	rm -f
 SRCS			:=	srcs/main.cpp
 LIBRARY		?=	-I ./srcs -I ./srcs/7zip -I ./srcs/lib
 OBJS			:=	$(SRCS:.cpp=.o)
 
-
 ifeq ($(TARGET),windows)
-#CXX 			:=	x86_64-w64-mingw32-g++
+CXX 			:=	x86_64-w64-mingw32-g++
 NAME			:= 	update-windows.exe
-#CXXFLAGS	+=	-static-libstdc++ --verbose
-CXXFLAGS	+=	-stdlib=libstdc++ -target x86_64-pc-windows-gnu \
-							-I /usr/lib/gcc/x86_64-w64-mingw32/10-win32/include/c++ \
-							-I /usr/lib/gcc/x86_64-w64-mingw32/10-win32/include/c++/x86_64-w64-mingw32 \
-							-I /usr/lib/gcc/x86_64-w64-mingw32/10-win32/include/c++/backward \
-							-I /usr/lib/gcc/x86_64-w64-mingw32/10-win32/include \
-							-I /usr/lib/gcc/x86_64-w64-mingw32/10-win32/include-fixed \
-							-I /usr/lib/gcc/x86_64-w64-mingw32/10-win32/../../../../x86_64-w64-mingw32/include
-							
+CXXFLAGS	+=	-static-libstdc++
 else ifeq ($(TARGET),macos)
 NAME			:= 	update-darwin
-CXXFLAGS	+=	-stdlib=libstdc++ -target aarch64-apple-darwin
+CXXFLAGS	+=	-stdlib=libstdc++ -target x86_64-apple-darwin
 else
 NAME			:= 	update-linux
 CXXFLAGS	+=	-stdlib=libstdc++ -target x86_64-pc-linux-gnu
