@@ -12,6 +12,7 @@ CXX 			:=	x86_64-w64-mingw32-g++
 NAME			:= 	update-windows.exe
 CXXFLAGS	+=	-static-libstdc++
 else ifeq ($(TARGET),macos)
+CXX				:=	clang++
 NAME			:= 	update-darwin
 CXXFLAGS	+=	-stdlib=libstdc++ -target x86_64-apple-darwin
 else
