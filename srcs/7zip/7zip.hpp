@@ -6,6 +6,7 @@
 #define PLATFORM TOSTRING(TARGET)
 
 #include <iostream>
+#include <cstring>
 #include <string>
 #include <sstream>
 #include <regex>
@@ -40,15 +41,15 @@ class SevenZip {
 		~SevenZip() {}
 	private:
 		std::string convertPlatform() {
-			if (std::strcmp(PLATFORM, "windows") == 0)
+			if (strcmp(PLATFORM, "windows") == 0)
 				return "win";
-			if (std::strcmp(PLATFORM, "macos") == 0)
+			if (strcmp(PLATFORM, "macos") == 0)
 				return "mac";
 			return "unix";
 		};
 
 		std::string exec7z() {
-			if (std::strcmp(PLATFORM, "windows") == 0)
+			if (strcmp(PLATFORM, "windows") == 0)
 				return "7za.exe";
 			return "7za";
 		}

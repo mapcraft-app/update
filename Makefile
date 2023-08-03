@@ -4,7 +4,7 @@ CXXFLAGS	:=	-Wall -Werror -Wextra -pedantic -std=c++17 \
 							-DTARGET=$(TARGET) -O2 -static
 RM				:=	rm -f
 SRCS			:=	srcs/main.cpp
-LIBRARY		?=	-I ./srcs -I ./srcs/7zip -I ./srcs/lib
+LIBRARY		?=	-I ./srcs -I ./srcs/7zip
 OBJS			:=	$(SRCS:.cpp=.o)
 
 ifeq ($(TARGET),windows)

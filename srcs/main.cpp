@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 #include "7zip.hpp"
 #include "spawn.hpp"
 #include "filesystem.hpp"
@@ -19,7 +20,7 @@ int main(int argc, char **argv) {
 		std::cerr << "Arguments:\n-1 {string} archive path\n-2 {string} unpack dir\n-3 {string} executable path\n-4 {boolean | optional} delete archive after unpack" << std::endl;
 		return 1;
 	}
-	if (argc == 5 && argv[4] && std::strcmp(argv[4], "true") == 0)
+	if (argc == 5 && argv[4] && strcmp(argv[4], "true") == 0)
 		deleteAfter = true;
 	try {
 		std::cout << "Unpack " << argv[1] << " to " << argv[2] << std::endl;
