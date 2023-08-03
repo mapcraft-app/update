@@ -1,16 +1,16 @@
 #ifndef SEVENZIP_HPP
 #define SEVENZIP_HPP
-
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 #define PLATFORM TOSTRING(TARGET)
-
 #include <iostream>
 #include <cstring>
-#include <string>
 #include <sstream>
 #include <regex>
 #include <algorithm>
+#include <string>
+#include <map>
+#include <vector>
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
