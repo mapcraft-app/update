@@ -30,3 +30,16 @@ jobs:
           files: |
             update-linux
             update-windows.exe
+  buildMac:
+    runs-on: macos-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+      - name: Build
+        run: make TARGET=macos
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            update-darwin
