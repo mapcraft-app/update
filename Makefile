@@ -12,7 +12,7 @@ CXXFLAGS	+=	-static-libstdc++
 else ifeq ($(TARGET),macos)
 CXX				:=	clang++
 NAME			:= 	update-darwin
-CXXFLAGS	+=	-stdlib=libstdc++ -target x86_64-apple-darwin
+CXXFLAGS	+=	-target x86_64-apple-darwin
 else
 CXX				:=	clang++-18
 NAME			:= 	update-linux
