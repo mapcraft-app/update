@@ -1,5 +1,5 @@
 # sudo apt install -y mingw-w64
-CXXFLAGS	:=	-Wall -Werror -Wextra -pedantic -std=c++17 -DTARGET=$(TARGET) -O2 -static
+CXXFLAGS	:=	-Wall -Werror -Wextra -pedantic -std=c++17 -DTARGET=$(TARGET) -O2
 RM				:=	rm -f
 SRCS			:=	srcs/main.cpp
 LIBRARY		?=	-I ./srcs -I ./srcs/7zip
@@ -8,7 +8,7 @@ OBJS			:=	$(SRCS:.cpp=.o)
 ifeq ($(TARGET),windows)
 CXX 			:=	x86_64-w64-mingw32-g++
 NAME			:= 	update-windows.exe
-CXXFLAGS	+=	-static-libstdc++
+CXXFLAGS	+=	-static -static-libstdc++
 else ifeq ($(TARGET),macos)
 CXX				:=	clang++
 NAME			:= 	update-darwin
@@ -16,7 +16,7 @@ CXXFLAGS	+=	-target x86_64-apple-darwin
 else
 CXX				:=	clang++-18
 NAME			:= 	update-linux
-CXXFLAGS	+=	-stdlib=libstdc++ -target x86_64-pc-linux-gnu
+CXXFLAGS	+=	-static -stdlib=libstdc++ -target x86_64-pc-linux-gnu
 endif
 
 CXXFLAGS	+= $(LIBRARY)

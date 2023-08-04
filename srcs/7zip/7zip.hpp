@@ -71,13 +71,24 @@ class SevenZip {
 			return "x64";
 		}
 
+		std::string addToPath(std::string s) {
+			return 
+				#if _WIN32
+					"\\"
+				#else
+					"/"
+				#endif
+				+ s;
+		}
+
 		std::string path7z() {
 			std::string path = current_path();
-			path += "srcs";
-			path += "7zip";
-			path += this->convertPlatform();
-			path += this->type();
-			path += this->exec7z();
+
+			path += this->addToPath("srcs");
+			path += this->addToPath("7zip");
+			path += this->addToPath(this->convertPlatform());
+			path += this->addToPath(this->type());
+			path += this->addToPath(this->exec7z());
 			return path;
 		}
 
@@ -160,6 +171,17 @@ class SevenZip {
 		}
 	public:
 		SevenZipList cmd(SevenZipVector args, bool genStat = true, bool yesForAll = false) {
+			this->percent = 0;
+			this->stdOut.clear();
+			this->stdOut = "";
+		#ifndef _WIN32
+			args.insert(args.begin(), "7za");
+		#endif
+			if (genStat)
+				args.push_back("-bsp1");
+			if (yesForAll)
+				args.push_back("-y");
+
 		#if _WIN32
 			SECURITY_ATTRIBUTES saAttr;
 			HANDLE hReadPipe, hWritePipe;
@@ -172,15 +194,6 @@ class SevenZip {
 			saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
 			saAttr.bInheritHandle = TRUE;
 			saAttr.lpSecurityDescriptor = NULL;
-
-			this->percent = 0;
-			this->stdOut.clear();
-			this->stdOut = "";
-			args.insert(args.begin(), "7za");
-			if (genStat)
-				args.push_back("-bsp1");
-			if (yesForAll)
-				args.push_back("-y");
 			
 			for (SevenZipVector::const_iterator it = args.begin(); it != args.end(); it++)
 				command += " " + *it;
@@ -211,21 +224,11 @@ class SevenZip {
 			int stdPipe[2], bytes;
 			char temp[256];
 
-			this->percent = 0;
-			this->stdOut.clear();
-			this->stdOut = "";
-			args.insert(args.begin(), "7za");
-			if (genStat)
-				args.push_back("-bsp1");
-			if (yesForAll)
-				args.push_back("-y");
-
 			auto execvArgs = new char* [args.size() + 1]();
 			for (size_t i = 0; i < args.size(); i++) {
 				execvArgs[i] = new char[(args[i].size() + 1)]();
 				std::memcpy(execvArgs[i], args[i].c_str(), (args[i].size() + 1));
 			}
-			execvArgs[args.size()] = NULL;
 
 			if (pipe(stdPipe) == -1)
 				throw new std::runtime_error(std::string("pipe failed: ") + strerror(errno));
