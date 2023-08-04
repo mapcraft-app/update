@@ -15,7 +15,7 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v3
       - name: Install lib
-        run: sudo apt-get update && sudo apt-get install -y build-essential curl git gnupg libc++-dev lsb-release mingw-w64 software-properties-common ssh wget
+        run: sudo apt-get update && sudo apt-get install -y build-essential curl git gnupg libc++-dev lsb-release mingw-w64 software-properties-common ssh wget zip
       - name: Install clang
         run: sudo curl -o llvm.sh https://apt.llvm.org/llvm.sh && sudo chmod +x llvm.sh && sudo ./llvm.sh 18 && sudo rm -rf llvm.sh
       - name: Build
@@ -23,13 +23,17 @@ jobs:
           make TARGET=linux
           make TARGET=linux clean
           make TARGET=windows
+      - name: Zip
+        run: |
+          zip -r update-linux.zip update-linux srcs/7zip/win/
+          zip -r update-windows.zip update-windows.exe srcs/7zip/unix/
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            update-linux
-            update-windows.exe
+            update-linux.zip
+            update-windows.zip
   buildMac:
     runs-on: macos-latest
     steps:
@@ -37,9 +41,11 @@ jobs:
         uses: actions/checkout@v3
       - name: Build
         run: make TARGET=macos
+      - name: Zip
+        run: zip -r update-darwin.zip update-darwin srcs/7zip/mac/
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            update-darwin
+            update-darwin.zip
