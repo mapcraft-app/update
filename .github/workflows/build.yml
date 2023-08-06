@@ -25,8 +25,8 @@ jobs:
           make TARGET=windows
       - name: Zip
         run: |
-          zip -r update-linux.zip update-linux srcs/7zip/win/
-          zip -r update-windows.zip update-windows.exe srcs/7zip/unix/
+          zip -r update-linux.zip update-linux srcs/7zip/unix/
+          zip -r update-windows.zip update-windows.exe srcs/7zip/win/
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')

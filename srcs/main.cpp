@@ -14,8 +14,6 @@ int main(int argc, char **argv) {
 	SevenZip zip = SevenZip();
 	bool deleteAfter = false;
 
-	std::cout << current_path() << std::endl;
-
 	if (argc < 4 || argc > 6) {
 		std::cerr << "Arguments:\n-1 {string} archive path\n-2 {string} unpack dir\n-3 {string} executable path\n-4 {boolean | optional} delete archive after unpack" << std::endl;
 		return 1;
