@@ -66,7 +66,7 @@ std::string executable_path() {
 	#if _WIN32
 		bytes = GetModuleFileName(NULL, pBuf, len);
 	#elif __APPLE__
-		bytes = _NSGetExecutablePath(path, &len);
+		bytes = _NSGetExecutablePath(pBuf, &len);
 	#else
 		bytes = std::min(readlink("/proc/self/exe", pBuf, len), static_cast<ssize_t>(len - 1));
 		if (bytes >= 0)
