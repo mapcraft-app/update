@@ -58,16 +58,18 @@ std::string current_path() {
  * Get absolute path of executable
 */
 std::string executable_path() {
-	std::string ret;
-	char pBuf[PATH_MAX];
 	int bytes = 0;
-	size_t len = sizeof(pBuf); 
+	char pBuf[PATH_MAX];
+	std::string ret;
 
 	#if _WIN32
+		size_t len = sizeof(pBuf); 
 		bytes = GetModuleFileName(NULL, pBuf, len);
 	#elif __APPLE__
+		uint32_t len = sizeof(pBuf); 
 		bytes = _NSGetExecutablePath(pBuf, &len);
 	#else
+		size_t len = sizeof(pBuf); 
 		bytes = std::min(readlink("/proc/self/exe", pBuf, len), static_cast<ssize_t>(len - 1));
 		if (bytes >= 0)
 			pBuf[bytes] = '\0';
