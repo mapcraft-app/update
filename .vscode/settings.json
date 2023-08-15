@@ -83,7 +83,22 @@
 		"mutex": "cpp",
 		"stop_token": "cpp",
 		"thread": "cpp",
-		"xhash": "cpp"
+		"xhash": "cpp",
+		"condition_variable": "cpp",
+		"variant": "cpp",
+		"__bit_reference": "cpp",
+		"__config": "cpp",
+		"__locale": "cpp",
+		"__node_handle": "cpp",
+		"__split_buffer": "cpp",
+		"__threading_support": "cpp",
+		"__tree": "cpp",
+		"__verbose_abort": "cpp",
+		"stack": "cpp",
+		"xtree": "cpp",
+		"span": "cpp",
+		"__hash_table": "cpp",
+		"queue": "cpp"
 	},
 	"C_Cpp.default.cppStandard": "c++17",
 }

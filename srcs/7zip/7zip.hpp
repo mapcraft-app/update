@@ -72,17 +72,11 @@ class SevenZip {
 		}
 
 		std::string addToPath(std::string s) {
-			return 
-				#if _WIN32
-					"\\"
-				#else
-					"/"
-				#endif
-				+ s;
+			return SEP + s;
 		}
 
 		std::string path7z() {
-			std::string path = current_path();
+			std::string path = executable_dir();
 
 			path += this->addToPath("srcs");
 			path += this->addToPath("7zip");
@@ -270,9 +264,8 @@ class SevenZip {
 		SevenZipList unpack(std::string pathToArchive, std::string pathToDest = "") {
 			SevenZipVector args = { "x", pathToArchive };
 
-			if (pathToDest.empty())
-				return this->cmd(args, true, true);
-			args.push_back("-o" + pathToDest);
+			if (!pathToDest.empty())
+				args.push_back("-o" + pathToDest);
 			return this->cmd(args, true, true);
 		}
 
